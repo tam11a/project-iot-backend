@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -7,9 +7,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     const { first_name, last_name, email, password, role_id } = createUserDto;
-    return this.prisma.user.create({
+    const data = this.prisma.user.create({
       data: {
         first_name,
         last_name,
@@ -21,34 +21,74 @@ export class UsersService {
           },
         },
       },
-      include: {
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
         role: true,
+        is_active: true,
+        created_at: true,
+        updated_at: true,
       },
     });
+
+    return {
+      message: 'User registered successfully',
+      data,
+      statusCode: 201,
+    };
   }
 
   findAll() {
     return this.prisma.user.findMany({
-      include: {
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
         role: true,
+        is_active: true,
+        created_at: true,
+        updated_at: true,
       },
     });
   }
 
-  findOne(id: number) {
-    return this.prisma.user.findUnique({
+  async findOne(id: number) {
+    const user = await this.prisma.user.findUnique({
       where: {
         id,
       },
-      include: {
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
         role: true,
+        is_active: true,
+        created_at: true,
+        updated_at: true,
       },
     });
+
+    if (!user) throw new NotFoundException(`User with id ${id} not found`);
+
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     const { first_name, last_name, email, role_id } = updateUserDto;
-    return this.prisma.user.update({
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) throw new NotFoundException(`User with id ${id} not found`);
+
+    const data = await this.prisma.user.update({
       where: {
         id,
       },
@@ -56,23 +96,54 @@ export class UsersService {
         first_name,
         last_name,
         email,
-        role: {
-          connect: {
-            id: role_id,
+        ...(role_id && {
+          role: {
+            connect: {
+              id: role_id,
+            },
           },
-        },
+        }),
       },
-      include: {
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
         role: true,
+        is_active: true,
+        created_at: true,
+        updated_at: true,
       },
     });
+
+    return {
+      message: 'User updated successfully',
+      data,
+      statusCode: 200,
+    };
   }
 
-  remove(id: number) {
-    return this.prisma.user.delete({
+  async remove(id: number) {
+    const data = this.prisma.user.delete({
       where: {
         id,
       },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        role: true,
+        is_active: true,
+        created_at: true,
+        updated_at: true,
+      },
     });
+
+    return {
+      message: 'User deleted successfully',
+      data,
+      statusCode: 200,
+    };
   }
 }
