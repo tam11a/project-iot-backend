@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int     @id @default(autoincrement())
+  first_name String
+  last_name  String?
+
+  email    String @unique
+  password String
+
+  role_id Int
+  role    Role @relation(fields: [role_id], references: [id])
+
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  label       String   @unique
+  permissions String[]
+
+  users User[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("roles")
+}
+
+model Room {
+  id          Int     @id @default(autoincrement())
+  label       String  @unique
+  description String?
+
+  sensors  Sensor[]
+  switches Switch[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("rooms")
+}
+
+model Sensor {
+  id          Int     @id @default(autoincrement())
+  label       String  @unique
+  description String?
+
+  room_id     Int
+  room        Room         @relation(fields: [room_id], references: [id])
+  sensor_data SensorData[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("sensors")
+}
+
+model SensorData {
+  id Int @id @default(autoincrement())
+
+  sensor_id Int
+  sensor    Sensor @relation(fields: [sensor_id], references: [id])
+
+  temperature Float @default(0)
+  humidity    Float @default(0)
+
+  created_at DateTime @default(now())
+
+  @@map("sensor_data")
+}
+
+model Switch {
+  id          Int     @id @default(autoincrement())
+  label       String  @unique
+  description String?
+
+  room_id Int
+  room    Room @relation(fields: [room_id], references: [id])
+
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  SwitchState SwitchState[]
+
+  @@map("switches")
+}
+
+model SwitchState {
+  id Int @id @default(autoincrement())
+
+  switch_id Int
+  switch    Switch @relation(fields: [switch_id], references: [id])
+
+  state Boolean
+
+  created_at DateTime @default(now())
+
+  @@map("switch_state")
+}
