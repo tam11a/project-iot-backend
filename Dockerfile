@@ -16,6 +16,9 @@ COPY . .
 # Copy the .env file
 COPY .env ./
 
+# Generate prisma client
+RUN npx prisma generate
+
 # Creates a "dist" folder with the production build
 RUN npm run build
 
