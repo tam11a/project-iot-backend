@@ -8,10 +8,12 @@ import { RolesModule } from './roles/roles.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { SensorsModule } from './sensors/sensors.module';
 import { SwitchesModule } from './switches/switches.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     PrismaModule,
+    AuthModule,
     UsersModule,
     RolesModule,
     RoomsModule,
