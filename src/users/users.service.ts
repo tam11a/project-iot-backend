@@ -9,7 +9,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const { first_name, last_name, email, password, role_id } = createUserDto;
-    const data = this.prisma.user.create({
+    const data = await this.prisma.user.create({
       data: {
         first_name,
         last_name,
@@ -124,7 +124,15 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const data = this.prisma.user.delete({
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) throw new NotFoundException(`User with id ${id} not found`);
+
+    const data = await this.prisma.user.delete({
       where: {
         id,
       },
