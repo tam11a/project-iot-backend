@@ -13,6 +13,7 @@ async function bootstrap() {
       'IoT API Documentation for Project 101 - Users, Roles, Permissions, Devices, etc.',
     )
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/', app, document);

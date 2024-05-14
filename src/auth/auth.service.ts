@@ -69,4 +69,12 @@ export class AuthService {
       statusCode: 200,
     };
   }
+
+  async validate(user: any) {
+    return {
+      message: 'User is valid',
+      data: user,
+      statusCode: 200,
+    };
+  }
 }
