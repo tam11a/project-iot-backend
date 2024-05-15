@@ -1,8 +1,32 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/project-iot-backend/src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/project-iot-backend/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/project-iot-backend",
+  "projects": {
+    "project-iot-backend": {
+      "type": "application",
+      "root": "apps/project-iot-backend",
+      "entryFile": "main",
+      "sourceRoot": "apps/project-iot-backend/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/project-iot-backend/tsconfig.app.json"
+      }
+    },
+    "listner": {
+      "type": "application",
+      "root": "apps/listner",
+      "entryFile": "main",
+      "sourceRoot": "apps/listner/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/listner/tsconfig.app.json"
+      }
+    }
   }
 }
