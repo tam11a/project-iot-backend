@@ -6,10 +6,15 @@ import {
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { MqttService } from 'src/mqtt/mqtt.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService, private prisma: PrismaService) {}
+  constructor(
+    private jwtService: JwtService,
+    private prisma: PrismaService,
+    private mqtt: MqttService,
+  ) {}
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
@@ -71,6 +76,8 @@ export class AuthService {
   }
 
   async validate(user: any) {
+    this.mqtt.mqttClient.publish('auth', 'User is valid');
+    console.log(this.mqtt.mqttClient.getLastMessageId());
     return {
       message: 'User is valid',
       data: user,
