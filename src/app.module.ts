@@ -13,8 +13,8 @@ import { MqttModule } from './mqtt/mqtt.module';
 
 @Module({
   imports: [
-    MqttModule,
     PrismaModule,
+    MqttModule,
     AuthModule,
     UsersModule,
     RolesModule,

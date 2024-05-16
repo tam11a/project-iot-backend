@@ -6,15 +6,10 @@ import {
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { MqttService } from 'src/mqtt/mqtt.service';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private jwtService: JwtService,
-    private prisma: PrismaService,
-    private mqtt: MqttService,
-  ) {}
+  constructor(private jwtService: JwtService, private prisma: PrismaService) {}
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
