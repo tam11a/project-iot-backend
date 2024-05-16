@@ -9,9 +9,11 @@ import { RoomsModule } from './rooms/rooms.module';
 import { SensorsModule } from './sensors/sensors.module';
 import { SwitchesModule } from './switches/switches.module';
 import { AuthModule } from './auth/auth.module';
+import { MqttModule } from './mqtt/mqtt.module';
 
 @Module({
   imports: [
+    MqttModule,
     PrismaModule,
     AuthModule,
     UsersModule,
