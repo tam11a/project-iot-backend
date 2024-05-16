@@ -6,9 +6,11 @@ export class MqttService implements OnModuleInit {
   mqttClient: MqttClient;
 
   onModuleInit() {
+    console.log(`iot101-server-${process.env.NODE_ENV}`);
     this.mqttClient = connect(
       process.env.MQTT_BROKER ?? 'mqtt://127.0.0.1:1883',
       {
+        clientId: `iot101-server-${process.env.NODE_ENV}`,
         clean: true,
         connectTimeout: 4000,
         // username: this.configService.get<string>('username'),
