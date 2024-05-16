@@ -15,7 +15,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
   imports: [
     ClientsModule.register([
       {
-        name: 'LISTNER_SERVICE',
+        name: 'MQ_CLIENT',
         transport: Transport.MQTT,
         options: {
           url: 'mqtt://localhost:1883',

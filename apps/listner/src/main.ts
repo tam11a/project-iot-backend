@@ -10,7 +10,6 @@ async function bootstrap() {
       options: {
         url: 'mqtt://127.0.0.1:1883',
       },
-      autoFlushLogs: true,
     },
   );
   await app.listen();
