@@ -76,8 +76,6 @@ export class AuthService {
   }
 
   async validate(user: any) {
-    this.mqtt.mqttClient.publish('auth', 'User is valid');
-    console.log(this.mqtt.mqttClient.getLastMessageId());
     return {
       message: 'User is valid',
       data: user,
