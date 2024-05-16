@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSensorDto } from './dto/create-sensor.dto';
 import { UpdateSensorDto } from './dto/update-sensor.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'apps/project-iot-backend/src/prisma/prisma.service';
 
 @Injectable()
 export class SensorsService {

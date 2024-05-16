@@ -7,8 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { Observable } from 'rxjs';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'apps/project-iot-backend/src/prisma/prisma.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

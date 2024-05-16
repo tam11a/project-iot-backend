@@ -9,9 +9,19 @@ import { RoomsModule } from './rooms/rooms.module';
 import { SensorsModule } from './sensors/sensors.module';
 import { SwitchesModule } from './switches/switches.module';
 import { AuthModule } from './auth/auth.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
+    ClientsModule.register([
+      {
+        name: 'MQ_CLIENT',
+        transport: Transport.MQTT,
+        options: {
+          url: 'mqtt://localhost:1883',
+        },
+      },
+    ]),
     PrismaModule,
     AuthModule,
     UsersModule,
