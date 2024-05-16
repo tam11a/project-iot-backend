@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { connect, MqttClient, Packet } from 'mqtt';
+import { connect, MqttClient } from 'mqtt';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
