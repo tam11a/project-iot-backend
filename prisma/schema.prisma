@@ -53,6 +53,8 @@ model Room {
   sensors  Sensor[]
   switches Switch[]
 
+  remote_action Boolean @default(true)
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -109,9 +111,16 @@ model SwitchState {
   switch_id Int
   switch    Switch @relation(fields: [switch_id], references: [id])
 
-  state Boolean
+  state  Boolean
+  status SwitchStatus
 
   created_at DateTime @default(now())
 
   @@map("switch_state")
+}
+
+enum SwitchStatus {
+  PENDING
+  SUCCESS
+  FAILED
 }

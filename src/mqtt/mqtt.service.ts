@@ -12,6 +12,8 @@ export class MqttService implements OnModuleInit {
   switchActionPattern = /switch\/([^/]+)\/action/;
   switchResponsePattern = /switch\/([^/]+)\/response/;
 
+  roomTogglePattern = /room\/([^/]+)\/toggle/;
+
   onModuleInit() {
     this.clientId = `iot101-server-${process.env.NODE_ENV ?? 'development'}`;
     this.mqttClient = connect(
@@ -44,12 +46,13 @@ export class MqttService implements OnModuleInit {
 
     // this.mqttClient.listeners('connect')
 
-    this.mqttClient.on('error', function () {
+    this.mqttClient.on('error', () => {
       console.error(
         'Error in connecting to MQTT Broker (',
         process.env.MQTT_BROKER ?? 'mqtt://127.0.0.1:1883',
         ')',
       );
+      this.mqttClient.reconnect();
     });
 
     this.mqttClient.subscribe(
@@ -74,6 +77,49 @@ export class MqttService implements OnModuleInit {
               payload_extract.temp,
               payload_extract.hum,
             );
+        } else if (topic.match(this.switchActionPattern) && !packet.retain) {
+          const switchId = parseInt(topic.match(this.switchActionPattern)?.[1]);
+          const payload_extract = JSON.parse(payload.toString());
+          console.log(
+            `Switch # ${switchId} -> Action: ${payload_extract.action}`,
+          );
+          this.mqttClient.publish(
+            `switch/${switchId}/pending`,
+            JSON.stringify({
+              action: payload_extract.action,
+            }),
+          );
+        } else if (topic.match(this.switchResponsePattern) && !packet.retain) {
+          const switchId = parseInt(
+            topic.match(this.switchResponsePattern)?.[1],
+          );
+          const payload_extract = JSON.parse(payload.toString());
+          console.log(
+            `Switch # ${switchId} -> Response: ${payload_extract.status}`,
+          );
+          this.prisma.switchState.create({
+            data: {
+              switch: {
+                connect: {
+                  id: switchId,
+                },
+              },
+              state: payload_extract.status,
+              status: 'SUCCESS',
+            },
+          });
+        } else if (topic.match(this.roomTogglePattern) && !packet.retain) {
+          const roomId = parseInt(topic.match(this.roomTogglePattern)?.[1]);
+          const payload_extract = JSON.parse(payload.toString());
+          console.log(`Room # ${roomId} -> Toggle: ${payload_extract.toggle}`);
+          this.prisma.room.update({
+            where: {
+              id: roomId,
+            },
+            data: {
+              remote_action: payload_extract.toggle,
+            },
+          });
         }
       } catch (err) {
         console.error(err);
