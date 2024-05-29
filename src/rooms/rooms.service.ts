@@ -32,12 +32,29 @@ export class RoomsService {
 
   findAll() {
     return this.prisma.room.findMany({
-      select: {
-        id: true,
-        label: true,
-        description: true,
-        created_at: true,
-        updated_at: true,
+      // select: {
+      //   id: true,
+      //   label: true,
+      //   description: true,
+      //   created_at: true,
+      //   updated_at: true,
+      // },
+      include: {
+        sensors: {
+          include: {
+            sensor_data: {
+              orderBy: {
+                created_at: 'desc',
+              },
+              take: 1,
+            },
+          },
+        },
+        switches: {
+          include: {
+            SwitchState: true,
+          },
+        },
       },
     });
   }
@@ -47,12 +64,29 @@ export class RoomsService {
       where: {
         id,
       },
-      select: {
-        id: true,
-        label: true,
-        description: true,
-        created_at: true,
-        updated_at: true,
+      // select: {
+      //   id: true,
+      //   label: true,
+      //   description: true,
+      //   created_at: true,
+      //   updated_at: true,
+      // },
+      include: {
+        sensors: {
+          include: {
+            sensor_data: {
+              orderBy: {
+                created_at: 'desc',
+              },
+              take: 1,
+            },
+          },
+        },
+        switches: {
+          include: {
+            SwitchState: true,
+          },
+        },
       },
     });
 

@@ -71,6 +71,9 @@ export class MqttService implements OnModuleInit {
         if (topic.match(this.sensorPattern) && !packet.retain) {
           const sensorId = parseInt(topic.match(this.sensorPattern)?.[1]);
           const payload_extract = JSON.parse(payload.toString());
+          console.log(
+            `Sensor # ${sensorId} -> Temperature: ${payload_extract.temp}, Humidity: ${payload_extract.hum}`,
+          );
           if (sensorId === payload_extract.ref)
             this.onSensorData(
               sensorId,
@@ -129,17 +132,22 @@ export class MqttService implements OnModuleInit {
   }
 
   async onSensorData(sensor_id: any, temperature: number, humidity: number) {
-    await this.prisma.sensorData.create({
-      data: {
-        sensor: {
-          connect: {
-            id: sensor_id,
+    console.log('onSensorData', sensor_id, temperature, humidity);
+    try {
+      await this.prisma.sensorData.create({
+        data: {
+          sensor: {
+            connect: {
+              id: sensor_id,
+            },
           },
+          temperature,
+          humidity,
         },
-        temperature,
-        humidity,
-      },
-    });
+      });
+    } catch (err) {
+      console.error(err);
+    }
     console.log(
       `Sensor # ${sensor_id} -> Temperature: ${temperature}, Humidity: ${humidity}`,
     );
