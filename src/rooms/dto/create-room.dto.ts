@@ -6,4 +6,14 @@ export class CreateRoomDto {
 
   @ApiProperty()
   description?: string;
+
+  @ApiProperty({
+    default: 1,
+  })
+  sensors?: number;
+
+  @ApiProperty({
+    default: 1,
+  })
+  switches?: number;
 }

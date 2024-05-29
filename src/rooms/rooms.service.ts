@@ -8,11 +8,25 @@ export class RoomsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createRoomDto: CreateRoomDto) {
-    const { label, description } = createRoomDto;
+    const { label, description, sensors = 1, switches = 1 } = createRoomDto;
     const data = await this.prisma.room.create({
       data: {
         label,
         description,
+        sensors: {
+          createMany: {
+            data: Array.from({ length: sensors }).map(() => ({
+              label: `Sensor ${Math.floor(Math.random() * 1000)}`,
+            })),
+          },
+        },
+        switches: {
+          createMany: {
+            data: Array.from({ length: switches }).map(() => ({
+              label: `Switch ${Math.floor(Math.random() * 1000)}`,
+            })),
+          },
+        },
       },
       select: {
         id: true,
@@ -52,7 +66,12 @@ export class RoomsService {
         },
         switches: {
           include: {
-            SwitchState: true,
+            SwitchState: {
+              orderBy: {
+                created_at: 'desc',
+              },
+              take: 1,
+            },
           },
         },
       },
@@ -84,7 +103,12 @@ export class RoomsService {
         },
         switches: {
           include: {
-            SwitchState: true,
+            SwitchState: {
+              orderBy: {
+                created_at: 'desc',
+              },
+              take: 1,
+            },
           },
         },
       },
