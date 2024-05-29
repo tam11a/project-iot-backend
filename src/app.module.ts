@@ -10,6 +10,7 @@ import { SensorsModule } from './sensors/sensors.module';
 import { SwitchesModule } from './switches/switches.module';
 import { AuthModule } from './auth/auth.module';
 import { MqttModule } from './mqtt/mqtt.module';
+import { ChartModule } from './chart/chart.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MqttModule } from './mqtt/mqtt.module';
     RoomsModule,
     SensorsModule,
     SwitchesModule,
+    ChartModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
