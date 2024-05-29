@@ -16,8 +16,8 @@ export class ChartService {
         ...(date_lte && date_gte
           ? {
               created_at: {
-                lte: new Date(date_lte),
-                gte: new Date(date_gte),
+                lte: new Date(date_lte).toISOString(),
+                gte: new Date(date_gte).toISOString(),
               },
             }
           : {}),
