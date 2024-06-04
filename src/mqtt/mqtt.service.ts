@@ -65,7 +65,7 @@ export class MqttService implements OnModuleInit {
       },
     );
 
-    this.mqttClient.on(`message`, (topic, payload, packet) => {
+    this.mqttClient.on(`message`, async (topic, payload, packet) => {
       // Store if New packet.retain
       try {
         if (topic.match(this.sensorPattern) && !packet.retain) {
@@ -75,7 +75,7 @@ export class MqttService implements OnModuleInit {
             `Sensor # ${sensorId} -> Temperature: ${payload_extract.temp}, Humidity: ${payload_extract.hum}`,
           );
           if (sensorId === payload_extract.ref)
-            this.onSensorData(
+            await this.onSensorData(
               sensorId,
               payload_extract.temp,
               payload_extract.hum,
@@ -100,7 +100,7 @@ export class MqttService implements OnModuleInit {
           console.log(
             `Switch # ${switchId} -> Response: ${payload_extract.status}`,
           );
-          this.prisma.switchState.create({
+          await this.prisma.switchState.create({
             data: {
               switch: {
                 connect: {
@@ -115,7 +115,7 @@ export class MqttService implements OnModuleInit {
           const roomId = parseInt(topic.match(this.roomTogglePattern)?.[1]);
           const payload_extract = JSON.parse(payload.toString());
           console.log(`Room # ${roomId} -> Toggle: ${payload_extract.toggle}`);
-          this.prisma.room.update({
+          await this.prisma.room.update({
             where: {
               id: roomId,
             },
