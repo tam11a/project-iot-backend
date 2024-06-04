@@ -56,7 +56,12 @@ export class MqttService implements OnModuleInit {
     });
 
     this.mqttClient.subscribe(
-      [`sensor/+/live`, `switch/+/action`, `switch/+/response`],
+      [
+        `sensor/+/live`,
+        `switch/+/action`,
+        `switch/+/response`,
+        `room/+/toggle`,
+      ],
       async (err) => {
         if (err) {
           console.error(err);
