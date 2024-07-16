@@ -13,6 +13,8 @@ services:
       - "4100:4000"
     networks:
       - mqtttest
+    depends_on:
+      - db
 
   mqtt-broker:
     image: eclipse-mosquitto
@@ -25,6 +27,19 @@ services:
       - mqtttest
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    container_name: iot-postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - '5433:5432'
+    networks:
+      - mqtttest
 
 networks:
   mqtttest:
